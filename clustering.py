@@ -40,6 +40,7 @@ class clustering:
             kmeanModel = KMeans(n_clusters=k)
             kmeanModel.fit(x_scaled)
             distortions.append(kmeanModel.inertia_)
+            print("Etape : {} en cours...".format(k))
         plt.figure(figsize=(16, 8))
         plt.plot(K, distortions, 'bx-')
         plt.xlabel('k')
@@ -65,6 +66,7 @@ class clustering:
             #Compute silhouette coef
             silhouette_avg = silhouette_score(data, kmeans.labels_)
             silouhette.append(silhouette_avg)
+            print("Etape : {} en cours...".format(i))
         #Creation of a df
         silouhette_coef = pd.DataFrame(silouhette, index=index_, columns=['coef'])
         silouhette_coef = silouhette_coef.sort_values(by='coef', ascending=False).reset_index()
