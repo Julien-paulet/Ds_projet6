@@ -29,27 +29,25 @@ class prepData:
 
 class clustering:
     """Class for clustering"""
-    def elbowMethod(data, x_scaled, min_clust, max_clust, random_s=42):
+    def elbowMethod(data, x_scaled, K, random_s=42):
         "Function that compute the distortion for each number of clusters"
         np.random.seed(random_s)
         distortions = []
         index_ = []
-        K = range(min_clust, max_clust+1)
         for k in K:
+            print("Step: {} running...".format(k))
             index_.append(k)
             kmeanModel = KMeans(n_clusters=k)
             kmeanModel.fit(x_scaled)
             distortions.append(kmeanModel.inertia_)
-            print("Etape : {} en cours...".format(k))
         plt.figure(figsize=(16, 8))
         plt.plot(K, distortions, 'bx-')
         plt.xlabel('k')
         plt.ylabel('Distortion')
         plt.title('The Elbow Method showing the optimal k')
         plt.show()
-        distortions = pd.DataFrame(silouhette, index=index_, columns=['coef'])
 
-    def silhouette(data, x_scaled, min_clust, max_clust, random_s=42):
+    def silhouette(data, x_scaled, K, random_s=42):
         """Function that computes the silhouette coef for a given numbers of clusters. \n
         Print a scatter plot of each coef in function of the coef.
         Return a sorted df with the silhouette coef"""
@@ -59,14 +57,15 @@ class clustering:
         silouhette = []
         #init index list
         index_ = []
-        for i in range(min_clust, max_clust+1):
+        for i in K:
+            print("Step: {} running...".format(i))
             index_.append(i)
             #Clustering
             kmeans = KMeans(n_clusters=i, random_state=random_s).fit(x_scaled)
             #Compute silhouette coef
             silhouette_avg = silhouette_score(data, kmeans.labels_)
             silouhette.append(silhouette_avg)
-            print("Etape : {} en cours...".format(i))
+            print("Silhouette score for step", i, "=", silhouette_avg)
         #Creation of a df
         silouhette_coef = pd.DataFrame(silouhette, index=index_, columns=['coef'])
         silouhette_coef = silouhette_coef.sort_values(by='coef', ascending=False).reset_index()
